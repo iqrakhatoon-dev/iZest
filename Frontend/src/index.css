@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Theme tokens ─────────────────────────── */
+:root {
+  --bg-page:    #F5F5F0;
+  --bg-card:    #ffffff;
+  --bg-input:   #eaeae5;
+  --border:     #d0d0cc;
+  --text-main:  #1A1A1A;
+  --text-muted: #666660;
+  --lime:       #3bbf0f;
+  --crimson:    #E8100A;
+}
+
+.dark {
+  --bg-page:    #0D0D0D;
+  --bg-card:    #1A1A1A;
+  --bg-input:   #0D0D0D;
+  --border:     #2a2a2a;
+  --text-main:  #F5F5F0;
+  --text-muted: #888880;
+  --lime:       #4ADE1A;
+  --crimson:    #E8100A;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-page);
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth theme transitions */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+/* Never transition GSAP targets */
+.animate-item, .animated-card {
+  transition: none !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #4ADE1A; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #6eff3a; }
