@@ -223,7 +223,6 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
       <div style={{ position:"absolute", inset:0, pointerEvents:"none",
                     background:"linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.1) 55%, transparent 75%)" }} />
 
-      {/* Mute */}
       <button onClick={() => setMuted(p => !p)}
         style={{ position:"absolute", top:"16px", right:"16px", zIndex:20,
                  width:"38px", height:"38px", borderRadius:"50%",
@@ -233,7 +232,6 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
         {muted ? <VolumeX size={17} style={{ color:"white" }} /> : <Volume2 size={17} style={{ color:"white" }} />}
       </button>
 
-      {/* Action bar */}
       <div style={{ position:"absolute", right:"14px", bottom:"220px", zIndex:20,
                     display:"flex", flexDirection:"column", alignItems:"center", gap:"28px" }}>
         <ActionBtn onClick={handleLike} label={formatCount(likeCount)}>
@@ -254,7 +252,6 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
         </ActionBtn>
       </div>
 
-      {/* Bottom info */}
       <div style={{ position:"absolute", bottom:0, left:0, right:"70px", zIndex:10,
                     padding:"0 16px 74px", display:"flex", flexDirection:"column", gap:"10px" }}>
         <p style={{ fontFamily:"'Bebas Neue',cursive", fontSize:"26px", letterSpacing:"1.5px",
@@ -286,7 +283,7 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
   );
 };
 
-// Home
+// ── Home ─────────────────────────────────────────────────────────
 const Home = () => {
   const [items,    setItems]    = useState(null);
   const [error,    setError]    = useState("");
@@ -299,10 +296,10 @@ const Home = () => {
     const loadFeed = async () => {
       try {
         const [feedRes, savedRes, likedRes] = await Promise.all([
-          axios.get("http://localhost:3000/api/food-items", { withCredentials: true }),
-          axios.get("http://localhost:3000/api/food-items/saved", { withCredentials: true })
+          axios.get(`${API_URL}/api/food-items`, { withCredentials: true }),
+          axios.get(`${API_URL}/api/food-items/saved`, { withCredentials: true })
                .catch(() => ({ data: { saves: [] } })),
-          axios.get("http://localhost:3000/api/food-items/liked", { withCredentials: true })
+          axios.get(`${API_URL}/api/food-items/liked`, { withCredentials: true })
                .catch(() => ({ data: { likes: [] } })),
         ]);
 
@@ -310,7 +307,6 @@ const Home = () => {
         if (!foodItems) { navigate("/user/login"); return; }
         setItems(Array.isArray(foodItems) ? foodItems : []);
 
-        // saved IDs Set
         const saves = savedRes.data?.saves || [];
         setSavedIds(new Set(
           saves.map(s => {
@@ -337,7 +333,7 @@ const Home = () => {
   }, []);
 
   const handleLogout = async () => {
-    try { await axios.get("http://localhost:3000/api/auth/user/logout", { withCredentials: true }); } catch {}
+    try { await axios.get(`${API_URL}/api/auth/user/logout`, { withCredentials: true }); } catch {}
     navigate("/user/login");
   };
 
