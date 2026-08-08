@@ -5,6 +5,7 @@ import AnimatedWrapper from "../../components/AnimatedWrapper";
 import ThemeToggle from "../../components/ThemeToggle";
 import useButtonFx from "../../hooks/useButtonFx";
 import axios from "axios";
+import API_URL from "../../api.js";
 
 const UserLogin = () => {
   const [error, setError] = useState("");
@@ -18,7 +19,7 @@ const UserLogin = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/user/login",
+        `${API_URL}/api/auth/user/login`,
         { email, password },
         { withCredentials: true }
       );

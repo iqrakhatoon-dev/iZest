@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import gsap from "gsap";
+import API_URL from "../../api.js";
 
 const FoodPartnerProfile = () => {
   const { id } = useParams();
@@ -19,8 +20,8 @@ const FoodPartnerProfile = () => {
     const load = async () => {
       try {
         const [partnerRes, videosRes] = await Promise.all([
-          axios.get(`http://localhost:3000/api/food-partner/profile/${id}`,       { withCredentials: true }),
-          axios.get(`http://localhost:3000/api/food-partner/profile/video/${id}`, { withCredentials: true }),
+          axios.get(`${API_URL}/api/food-partner/profile/${id}`,       { withCredentials: true }),
+          axios.get(`${API_URL}/api/food-partner/profile/video/${id}`, { withCredentials: true }),
         ]);
 
         

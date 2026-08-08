@@ -5,6 +5,7 @@ import AnimatedWrapper from "../../components/AnimatedWrapper";
 import ThemeToggle from "../../components/ThemeToggle";
 import useButtonFx from "../../hooks/useButtonFx";
 import axios from "axios";
+import API_URL from "../../api.js";
 
 const FoodPartnerRegister = () => {
   const [error, setError] = useState("");
@@ -22,7 +23,7 @@ const FoodPartnerRegister = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/food-partner/register",
+        `${API_URL}/api/auth/food-partner/register`,
         { username, contactName, phoneNumber, email, address, password },
         { withCredentials: true }
       );

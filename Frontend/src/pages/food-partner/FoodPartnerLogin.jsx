@@ -5,6 +5,7 @@ import ThemeToggle from "../../components/ThemeToggle";
 import useButtonFx from "../../hooks/useButtonFx";
 import axios from "axios";
 import {useNavigate} from "react-router-dom"
+import API_URL from "../../api.js";
 
 const FoodPartnerLogin = () => {
 
@@ -17,7 +18,7 @@ const FoodPartnerLogin = () => {
 
   try {
     const res = await axios.post(
-      "http://localhost:3000/api/auth/food-partner/login",
+      `${API_URL}/api/auth/food-partner/login`,
       { email, password },
       { withCredentials: true }
     );

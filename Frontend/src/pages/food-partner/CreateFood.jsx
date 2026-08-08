@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import gsap from "gsap";
+import API_URL from "../../api.js";
 
 const CreateFood = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const CreateFood = () => {
       formData.append("videoUrl",    videoFile);
 
       await axios.post(
-        "http://localhost:3000/api/food-items",
+        `${API_URL}/api/food-items`,
         formData,
         {
           withCredentials: true,

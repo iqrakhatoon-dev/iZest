@@ -5,6 +5,7 @@ import AnimatedWrapper from "../../components/AnimatedWrapper";
 import ThemeToggle from "../../components/ThemeToggle";
 import useButtonFx from "../../hooks/useButtonFx";
 import axios from "axios";
+import API_URL from "../../api.js";
 
 const UserRegister = () => {
   const [error, setError] = useState("");
@@ -19,7 +20,7 @@ const UserRegister = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/user/register",
+        `${API_URL}/api/auth/user/register`,
         { username, email, password },
         { withCredentials: true }
       );

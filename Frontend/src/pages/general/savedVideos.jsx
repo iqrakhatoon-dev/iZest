@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Home as HomeIcon, Bookmark, LogOut, Play } from "lucide-react";
+import API_URL from "../../api.js";
 
 const NAV_ITEMS = [
   { label: "Home",  Icon: HomeIcon, path: "/"      },
@@ -228,7 +229,7 @@ const SavedVideos = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/food-items/saved", { withCredentials: true });
+        const res = await axios.get(`${API_URL}/api/food-items/saved` , { withCredentials: true });
         setSaves(res.data?.saves || []);
       } catch (err) {
         if (err.response?.status === 401) { navigate("/user/login"); return; }
@@ -244,20 +245,20 @@ const SavedVideos = () => {
     setSaves((prev) => prev.filter((s) => s._id !== saveId));
     try {
       await axios.post(
-        "http://localhost:3000/api/food-items/save",
+        `${API_URL}/api/food-items/save`,
         { foodItemId },
         { withCredentials: true }
       );
     } catch (err) {
       if (err.response?.status === 401) navigate("/user/login");
       // refetch on failure
-      const res = await axios.get("http://localhost:3000/api/food-items/saved", { withCredentials: true });
+      const res = await axios.get(`${API_URL}/api/food-items/saved` , { withCredentials: true });
       setSaves(res.data?.saves || []);
     }
   };
 
   const handleLogout = async () => {
-    try { await axios.get("http://localhost:3000/api/auth/user/logout", { withCredentials: true }); } catch {}
+    try { await axios.get(`${API_URL}/api/auth/user/logout`, { withCredentials: true }); } catch {}
     navigate("/user/login");
   };
 

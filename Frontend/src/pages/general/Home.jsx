@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../../api.js";
 import {
   Home as HomeIcon, Bookmark, LogOut, Heart,
   MessageCircle, Volume2, VolumeX, X,
@@ -176,7 +177,7 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
     setLikeCount(c => wasLiked ? c - 1 : c + 1);
     if (!wasLiked) { setLikeAnim(true); setTimeout(() => setLikeAnim(false), 350); }
     try {
-      await axios.post("http://localhost:3000/api/food-items/like",
+      await axios.post(`${API_URL}/api/food-items/like`,
         { foodItemId: item._id }, { withCredentials: true });
     } catch (err) {
       if (err.response?.status === 401) { navigate("/user/login"); return; }
@@ -197,7 +198,7 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
       return next;
     });
     try {
-      await axios.post("http://localhost:3000/api/food-items/save",
+      await axios.post(`${API_URL}/api/food-items/save`,
         { foodItemId: item._id }, { withCredentials: true });
     } catch (err) {
       if (err.response?.status === 401) { navigate("/user/login"); return; }
