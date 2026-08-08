@@ -36,7 +36,7 @@ router.post("/like", Middleware.AuthUserOrFoodPartnerMiddleware, foodItemControl
  * @description User can get all liked food items
  * @access private (users)
  */
-router.get('/liked', Middleware.AuthUserMiddleware, foodItemController.getLikedItems)
+router.get('/liked', Middleware.AuthUserOrFoodPartnerMiddleware, foodItemController.getLikedItems)
 
 /** 
  * @route POST /api/food-items/save
