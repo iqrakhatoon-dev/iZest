@@ -1,24 +1,31 @@
 # iZest 🍔
 
-A TikTok/Instagram-style food discovery platform where users scroll through short food videos, like, save, and visit restaurant stores — all in a reel-style feed.
+> A TikTok/Instagram-style food discovery platform where users scroll through short food videos, like, save, and visit restaurant store profiles — all in a reel-style feed.
 
-**Live Demo:** [izest.vercel.app](https://izest.vercel.app)  
-**Backend:** [izest-backend.onrender.com](https://izest-backend.onrender.com)
+**🌐 Live Demo:** [izest.vercel.app](https://izest.vercel.app) &nbsp;|&nbsp; **🚀 Backend:** [izest-backend.onrender.com](https://izest-backend.onrender.com)
+
+---
+
+## Screenshots
+
+| Feed | Partner Profile | Saved |
+|------|----------------|-------|
+| ![Feed](https://github.com/user-attachments/assets/8b7827e3-d002-4738-b4b8-16a555c48efa) | ![Profile](https://github.com/user-attachments/assets/224d1ba1-bef4-4f07-865f-a0267cee2767) | ![Saved](https://github.com/user-attachments/assets/0178a2bd-bc67-4ae8-8234-7560b5a110fc) |
 
 ---
 
 ## Features
 
-**For Users**
+### 👤 For Users
 - 📱 TikTok-style vertical reel feed with scroll snapping
 - ❤️ Like / unlike food items (persists after refresh)
 - 🔖 Save / unsave food items
 - 🏪 Visit food partner store profiles
 - 🌙 Dark / light mode toggle (persists via localStorage)
-- 📱 Fully responsive — mobile bottom nav, desktop sidebar
+- 📲 Fully responsive — mobile bottom nav, desktop sidebar
 
-**For Food Partners**
-- 🍽️ Register restaurant and create partner account
+### 🍽️ For Food Partners
+- 🏪 Register restaurant and create a partner account
 - 🎬 Upload dish videos with name and description
 - 📊 Partner profile page with menu grid
 
@@ -26,22 +33,10 @@ A TikTok/Instagram-style food discovery platform where users scroll through shor
 
 ## Tech Stack
 
-**Frontend**
-- React 18 + Vite
-- Tailwind CSS v4
-- GSAP (animations)
-- Axios
-- React Router DOM
-- Lucide React (icons)
-
-**Backend**
-- Node.js + Express
-- MongoDB + Mongoose
-- JWT Authentication (httpOnly cookies)
-- Multer (file upload)
-- ImageKit (video CDN)
-- bcrypt (password hashing)
-- CORS + Cookie Parser
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React 18 + Vite, Tailwind CSS v4, GSAP, Axios, React Router DOM, Lucide React |
+| **Backend** | Node.js + Express, MongoDB + Mongoose, JWT (httpOnly cookies), Multer, ImageKit, bcrypt |
 
 ---
 
@@ -52,46 +47,22 @@ iZest/
 ├── Frontend/
 │   ├── src/
 │   │   ├── pages/
-│   │   │   ├── general/
-│   │   │   │   └── Home.jsx
-│   │   │   ├── user/
-│   │   │   │   ├── UserLogin.jsx
-│   │   │   │   └── UserRegister.jsx
-│   │   │   ├── food-partner/
-│   │   │   │   ├── FoodPartnerLogin.jsx
-│   │   │   │   ├── FoorPartnerRegister.jsx
-│   │   │   │   ├── FoodPartnerProfile.jsx
-│   │   │   │   └── CreateFood.jsx
+│   │   │   ├── general/         # Home.jsx
+│   │   │   ├── user/            # UserLogin.jsx, UserRegister.jsx
+│   │   │   ├── food-partner/    # Login, Register, Profile, CreateFood
 │   │   │   └── SavedVideos.jsx
-│   │   ├── components/
-│   │   │   ├── AnimatedWrapper.jsx
-│   │   │   └── ThemeToggle.jsx
-│   │   ├── hooks/
-│   │   │   └── useButtonFx.js
-│   │   └── routes/
-│   │       └── AppRoutes.jsx
+│   │   ├── components/          # AnimatedWrapper, ThemeToggle
+│   │   ├── hooks/               # useButtonFx.js
+│   │   └── routes/              # AppRoutes.jsx
 │   └── index.css
 │
 └── Backend/
     └── src/
-        ├── controller/
-        │   ├── auth.controller.js
-        │   ├── foodItem.controller.js
-        │   └── foodPartner.controller.js
-        ├── models/
-        │   ├── user.model.js
-        │   ├── foodPartner.model.js
-        │   ├── foodItem.model.js
-        │   ├── likes.model.js
-        │   └── save.model.js
-        ├── routes/
-        │   ├── auth.routes.js
-        │   ├── foodItem.routes.js
-        │   └── food-partner.routes.js
-        ├── middleware/
-        │   └── auth.middleware.js
-        ├── services/
-        │   └── storage.service.js
+        ├── controller/          # auth, foodItem, foodPartner
+        ├── models/              # user, foodPartner, foodItem, likes, save
+        ├── routes/              # auth, foodItem, food-partner
+        ├── middleware/          # auth.middleware.js
+        ├── services/            # storage.service.js
         ├── app.js
         └── server.js
 ```
@@ -105,14 +76,22 @@ iZest/
 - MongoDB Atlas account
 - ImageKit account
 
-### Backend Setup
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/iqrakhatoon-dev/iZest.git
+cd iZest
+```
+
+### 2. Backend Setup
 
 ```bash
 cd Backend
 npm install
 ```
 
-Create `.env` file:
+Create a `.env` file:
+
 ```env
 PORT=3000
 MONGO_URI=your_mongodb_atlas_uri
@@ -127,14 +106,15 @@ FRONTEND_URL=http://localhost:5173
 node server.js
 ```
 
-### Frontend Setup
+### 3. Frontend Setup
 
 ```bash
 cd Frontend
 npm install
 ```
 
-Create `.env` file:
+Create a `.env` file:
+
 ```env
 VITE_API_URL=http://localhost:3000
 ```
@@ -145,9 +125,10 @@ npm run dev
 
 ---
 
-## API Routes
+## API Reference
 
-### Auth
+### Auth Routes
+
 | Method | Route | Description | Access |
 |--------|-------|-------------|--------|
 | POST | `/api/auth/user/register` | User registration | Public |
@@ -157,17 +138,19 @@ npm run dev
 | POST | `/api/auth/food-partner/login` | Partner login | Public |
 | GET | `/api/auth/food-partner/logout` | Partner logout | Private |
 
-### Food Items
+### Food Item Routes
+
 | Method | Route | Description | Access |
 |--------|-------|-------------|--------|
 | GET | `/api/food-items` | Get all food items (feed) | User/Partner |
-| POST | `/api/food-items` | Create food item (video upload) | Partner only |
+| POST | `/api/food-items` | Create food item with video | Partner only |
 | POST | `/api/food-items/like` | Like / unlike a food item | User/Partner |
 | GET | `/api/food-items/liked` | Get all liked items | User |
 | POST | `/api/food-items/save` | Save / unsave a food item | User/Partner |
 | GET | `/api/food-items/saved` | Get all saved items | User/Partner |
 
-### Food Partner
+### Food Partner Routes
+
 | Method | Route | Description | Access |
 |--------|-------|-------------|--------|
 | GET | `/api/food-partner/profile/:id` | Get partner profile | User |
@@ -177,38 +160,40 @@ npm run dev
 
 ## Deployment
 
-**Frontend → Vercel**
+### Frontend → Vercel
+
 ```bash
 cd Frontend
 npm run build
 ```
-Add environment variable `VITE_API_URL` on Vercel dashboard.
 
-**Backend → Render**
-- Root Directory: `Backend`
-- Build Command: `npm install`
-- Start Command: `node server.js`
-- Add all `.env` variables on Render dashboard
+Set environment variable on Vercel dashboard:
+```
+VITE_API_URL = https://your-backend-url.onrender.com
+```
 
----
+### Backend → Render
 
-## Screenshots
+| Setting | Value |
+|---------|-------|
+| Root Directory | `Backend` |
+| Build Command | `npm install` |
+| Start Command | `node server.js` |
 
-<!-- Add screenshots here after deployment -->
-| Feed | Partner Profile | Saved |
-|------|----------------|-------|
-| ![Feed]() | ![Profile]() | ![Saved]() |
+Add all `.env` variables in the Render dashboard.
 
 ---
 
 ## Author
 
-**Iqra Khatoon**  
-Full Stack Developer (MERN)  
-[GitHub](https://github.com/iqrakhatoon-dev) • [LinkedIn](https://linkedin.com/in/iqrakhatoon-dev) • [Instagram](https://instagram.com/technotowniqra)
+**Iqra Khatoon** — Full Stack Developer (MERN)
+
+[![GitHub](https://img.shields.io/badge/GitHub-iqrakhatoon--dev-181717?style=flat&logo=github)](https://github.com/iqrakhatoon-dev)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-iqrakhatoon--dev-0A66C2?style=flat&logo=linkedin)](https://linkedin.com/in/iqrakhatoon-dev)
+[![Instagram](https://img.shields.io/badge/Instagram-technotowniqra-E4405F?style=flat&logo=instagram)](https://instagram.com/technotowniqra)
 
 ---
 
 ## License
 
-MIT License — feel free to use this project for learning purposes.
+This project is licensed under the [MIT License](LICENSE) — free to use for learning purposes.
