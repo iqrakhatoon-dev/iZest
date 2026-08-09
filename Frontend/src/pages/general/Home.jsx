@@ -5,7 +5,7 @@ import axios from "axios";
 import API_URL from "../../api.js";
 import {
   Home as HomeIcon, Bookmark, LogOut, Heart,
-  MessageCircle, Volume2, VolumeX, X,
+  MessageCircle, Volume2, VolumeX, X, Sun, Moon,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -13,19 +13,40 @@ const NAV_ITEMS = [
   { label: "Saved", Icon: Bookmark, path: "/saved" },
 ];
 
-const BottomNav = ({ onLogout }) => {
+// ── Theme Toggle (global, persists) ─────────────────────────────
+const useTheme = () => {
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("izest-theme");
+    return saved ? saved === "dark" : true;
+  });
+
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("izest-theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("izest-theme", "light");
+    }
+  }, [dark]);
+
+  return [dark, setDark];
+};
+
+// ── Bottom Nav ───────────────────────────────────────────────────
+const BottomNav = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden items-center justify-around"
-      style={{ height:"62px", background:"rgba(0,0,0,0.65)", backdropFilter:"blur(20px)",
+      style={{ height:"62px", background:"rgba(0,0,0,0.75)", backdropFilter:"blur(20px)",
                WebkitBackdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.06)" }}>
       {NAV_ITEMS.map(({ label, Icon, path }) => {
         const active = pathname === path;
         return (
           <button key={path} onClick={() => navigate(path)}
             style={{ background:"none", border:"none", cursor:"pointer",
-                     display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 24px" }}>
+                     display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 16px" }}>
             <Icon size={22} strokeWidth={active?2.5:1.8} fill={active?"#4ADE1A":"none"}
               style={{ color: active?"#4ADE1A":"rgba(255,255,255,0.45)" }} />
             <span style={{ fontSize:"10px", fontFamily:"'DM Sans',sans-serif",
@@ -35,9 +56,23 @@ const BottomNav = ({ onLogout }) => {
           </button>
         );
       })}
+
+      {/* Theme toggle in bottom nav */}
+      <button onClick={() => setDark(p => !p)}
+        style={{ background:"none", border:"none", cursor:"pointer",
+                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 16px" }}>
+        {dark
+          ? <Sun size={22} strokeWidth={1.8} style={{ color:"rgba(255,255,255,0.45)" }} />
+          : <Moon size={22} strokeWidth={1.8} style={{ color:"rgba(255,255,255,0.45)" }} />
+        }
+        <span style={{ fontSize:"10px", fontFamily:"'DM Sans',sans-serif", color:"rgba(255,255,255,0.45)" }}>
+          {dark ? "Light" : "Dark"}
+        </span>
+      </button>
+
       <button onClick={onLogout}
         style={{ background:"none", border:"none", cursor:"pointer",
-                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 24px" }}>
+                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 16px" }}>
         <LogOut size={22} strokeWidth={1.8} style={{ color:"#E8100A" }} />
         <span style={{ fontSize:"10px", fontFamily:"'DM Sans',sans-serif", color:"#E8100A" }}>Logout</span>
       </button>
@@ -45,7 +80,8 @@ const BottomNav = ({ onLogout }) => {
   );
 };
 
-const Sidebar = ({ onLogout }) => {
+// ── Sidebar ──────────────────────────────────────────────────────
+const Sidebar = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   return (
@@ -74,28 +110,47 @@ const Sidebar = ({ onLogout }) => {
           );
         })}
       </div>
-      <button onClick={onLogout}
-        style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 12px",
-                 borderRadius:"10px", border:"1px solid #2a0a0a", background:"#160505",
-                 cursor:"pointer", width:"100%" }}>
-        <LogOut size={18} style={{ color:"#E8100A", flexShrink:0 }} />
-        <span style={{ fontFamily:"'Inter',sans-serif", fontSize:"13px", color:"#E8100A", fontWeight:500 }}>
-          Logout
-        </span>
-      </button>
+
+      <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+        {/* Theme toggle in sidebar */}
+        <button onClick={() => setDark(p => !p)}
+          style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 12px",
+                   borderRadius:"10px", border:"1px solid #2a2a2a", background:"transparent",
+                   cursor:"pointer", width:"100%" }}>
+          {dark
+            ? <Sun size={18} style={{ color:"#888880", flexShrink:0 }} />
+            : <Moon size={18} style={{ color:"#888880", flexShrink:0 }} />
+          }
+          <span style={{ fontFamily:"'Inter',sans-serif", fontSize:"13px", color:"#888880", fontWeight:500 }}>
+            {dark ? "Light mode" : "Dark mode"}
+          </span>
+        </button>
+
+        <button onClick={onLogout}
+          style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 12px",
+                   borderRadius:"10px", border:"1px solid #2a0a0a", background:"#160505",
+                   cursor:"pointer", width:"100%" }}>
+          <LogOut size={18} style={{ color:"#E8100A", flexShrink:0 }} />
+          <span style={{ fontFamily:"'Inter',sans-serif", fontSize:"13px", color:"#E8100A", fontWeight:500 }}>
+            Logout
+          </span>
+        </button>
+      </div>
     </div>
   );
 };
 
+// ── Comment Drawer ───────────────────────────────────────────────
 const CommentDrawer = ({ onClose }) => {
   const [text, setText] = useState("");
   return (
+    // ✅ fixed z-index aur bottom nav ke upar
     <div onClick={onClose}
-      style={{ position:"absolute", inset:0, zIndex:40, background:"rgba(0,0,0,0.6)",
+      style={{ position:"fixed", inset:0, zIndex:60, background:"rgba(0,0,0,0.6)",
                backdropFilter:"blur(6px)", display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
       <div onClick={(e) => e.stopPropagation()}
         style={{ background:"#181818", borderRadius:"20px 20px 0 0",
-                 borderTop:"1px solid #2a2a2a", padding:"12px 16px 36px",
+                 borderTop:"1px solid #2a2a2a", padding:"12px 16px 80px", // ✅ 80px bottom — nav ke upar
                  display:"flex", flexDirection:"column", gap:"12px" }}>
         <div style={{ width:"36px", height:"4px", borderRadius:"2px", background:"#333", margin:"0 auto 4px" }} />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
@@ -126,6 +181,7 @@ const CommentDrawer = ({ onClose }) => {
   );
 };
 
+// ── Action Button ────────────────────────────────────────────────
 const ActionBtn = ({ onClick, children, label }) => (
   <button onClick={onClick}
     style={{ background:"none", border:"none", cursor:"pointer",
@@ -138,6 +194,7 @@ const ActionBtn = ({ onClick, children, label }) => (
   </button>
 );
 
+// ── Reel Card ────────────────────────────────────────────────────
 const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setSavedIds }) => {
   const videoRef = useRef(null);
   const navigate = useNavigate();
@@ -216,6 +273,7 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
   const displayDesc = !expanded && isLong ? desc.slice(0, 80)+"…" : desc;
 
   return (
+    // ✅ w-full — mobile pe full width, no black sides
     <div className="relative w-full flex-shrink-0 snap-start overflow-hidden"
       style={{ height:"100dvh", background:"#000" }}>
       <video ref={videoRef} src={item.videoUrl} loop muted playsInline
@@ -232,28 +290,30 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
         {muted ? <VolumeX size={17} style={{ color:"white" }} /> : <Volume2 size={17} style={{ color:"white" }} />}
       </button>
 
-      <div style={{ position:"absolute", right:"14px", bottom:"220px", zIndex:20,
-                    display:"flex", flexDirection:"column", alignItems:"center", gap:"28px" }}>
+      {/* ✅ Action bar — bottom se upar, nav clear karta hai */}
+      <div style={{ position:"absolute", right:"14px", bottom:"160px", zIndex:20,
+                    display:"flex", flexDirection:"column", alignItems:"center", gap:"24px" }}>
         <ActionBtn onClick={handleLike} label={formatCount(likeCount)}>
-          <Heart size={36} strokeWidth={1.8} fill={liked?"#E8100A":"none"}
+          <Heart size={32} strokeWidth={1.8} fill={liked?"#E8100A":"none"}
             style={{ color:liked?"#E8100A":"white",
                      transform:likeAnim?"scale(1.4)":"scale(1)",
                      transition:"transform 0.25s cubic-bezier(0.34,1.56,0.64,1), color 0.15s",
                      filter:liked?"drop-shadow(0 0 6px rgba(232,16,10,0.7))":"none" }} />
         </ActionBtn>
         <ActionBtn onClick={() => setShowComment(true)} label="Comment">
-          <MessageCircle size={36} strokeWidth={1.8} style={{ color:"white" }} />
+          <MessageCircle size={32} strokeWidth={1.8} style={{ color:"white" }} />
         </ActionBtn>
         <ActionBtn onClick={handleSave} label="Save">
-          <Bookmark size={36} strokeWidth={1.8} fill={saved?"#4ADE1A":"none"}
+          <Bookmark size={32} strokeWidth={1.8} fill={saved?"#4ADE1A":"none"}
             style={{ color:saved?"#4ADE1A":"white",
                      filter:saved?"drop-shadow(0 0 6px rgba(74,222,26,0.6))":"none",
                      transition:"color 0.2s, filter 0.2s" }} />
         </ActionBtn>
       </div>
 
+      {/* ✅ bottom info — nav clear karta hai 74px */}
       <div style={{ position:"absolute", bottom:0, left:0, right:"70px", zIndex:10,
-                    padding:"0 16px 74px", display:"flex", flexDirection:"column", gap:"10px" }}>
+                    padding:"0 16px 80px", display:"flex", flexDirection:"column", gap:"10px" }}>
         <p style={{ fontFamily:"'Bebas Neue',cursive", fontSize:"26px", letterSpacing:"1.5px",
                     color:"white", lineHeight:1.1, textShadow:"0 2px 12px rgba(0,0,0,0.9)" }}>
           {item.name}
@@ -278,6 +338,7 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
           Visit Store →
         </button>
       </div>
+
       {showComment && <CommentDrawer onClose={() => setShowComment(false)} />}
     </div>
   );
@@ -290,6 +351,7 @@ const Home = () => {
   const [muted,    setMuted]    = useState(true);
   const [likedIds, setLikedIds] = useState(new Set());
   const [savedIds, setSavedIds] = useState(new Set());
+  const [dark,     setDark]     = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -339,14 +401,16 @@ const Home = () => {
 
   const shell = (children) => (
     <div style={{ display:"flex", height:"100dvh", background:"#0D0D0D" }}>
-      <Sidebar onLogout={handleLogout} />
-      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", background:"#0a0a0a" }}>
-        <div style={{ width:"100%", maxWidth:"400px", height:"100dvh" }}>
+      <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
+      {/* ✅ flex-1 — full width on mobile, no black sides */}
+      <div style={{ flex:1, display:"flex", alignItems:"stretch", justifyContent:"center", background:"#0a0a0a",
+                    minWidth:0 }}>
+        <div style={{ width:"100%", maxWidth:"420px", height:"100dvh" }}>
           {children}
         </div>
       </div>
       <div className="hidden md:block" style={{ width:"220px", flexShrink:0, borderLeft:"1px solid #1a1a1a" }} />
-      <BottomNav onLogout={handleLogout} />
+      <BottomNav onLogout={handleLogout} dark={dark} setDark={setDark} />
     </div>
   );
 
@@ -373,7 +437,7 @@ const Home = () => {
   );
 
   return shell(
-    <div style={{ height:"100dvh", overflowY:"scroll", scrollSnapType:"y mandatory" }}>
+    <div style={{ height:"100dvh", overflowY:"scroll", scrollSnapType:"y mandatory", width:"100%" }}>
       {items.map((item) => (
         <ReelCard key={item._id} item={item} muted={muted} setMuted={setMuted}
           likedIds={likedIds} setLikedIds={setLikedIds}
