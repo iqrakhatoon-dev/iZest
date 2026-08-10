@@ -13,13 +13,11 @@ const NAV_ITEMS = [
   { label: "Saved", Icon: Bookmark, path: "/saved" },
 ];
 
-// ── Theme Toggle (global, persists) ─────────────────────────────
 const useTheme = () => {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("izest-theme");
     return saved ? saved === "dark" : true;
   });
-
   useEffect(() => {
     if (dark) {
       document.documentElement.classList.add("dark");
@@ -29,11 +27,9 @@ const useTheme = () => {
       localStorage.setItem("izest-theme", "light");
     }
   }, [dark]);
-
   return [dark, setDark];
 };
 
-// ── Bottom Nav ───────────────────────────────────────────────────
 const BottomNav = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -46,7 +42,7 @@ const BottomNav = ({ onLogout, dark, setDark }) => {
         return (
           <button key={path} onClick={() => navigate(path)}
             style={{ background:"none", border:"none", cursor:"pointer",
-                     display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 16px" }}>
+                     display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 12px" }}>
             <Icon size={22} strokeWidth={active?2.5:1.8} fill={active?"#4ADE1A":"none"}
               style={{ color: active?"#4ADE1A":"rgba(255,255,255,0.45)" }} />
             <span style={{ fontSize:"10px", fontFamily:"'DM Sans',sans-serif",
@@ -56,11 +52,9 @@ const BottomNav = ({ onLogout, dark, setDark }) => {
           </button>
         );
       })}
-
-      {/* Theme toggle in bottom nav */}
       <button onClick={() => setDark(p => !p)}
         style={{ background:"none", border:"none", cursor:"pointer",
-                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 16px" }}>
+                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 12px" }}>
         {dark
           ? <Sun size={22} strokeWidth={1.8} style={{ color:"rgba(255,255,255,0.45)" }} />
           : <Moon size={22} strokeWidth={1.8} style={{ color:"rgba(255,255,255,0.45)" }} />
@@ -69,10 +63,9 @@ const BottomNav = ({ onLogout, dark, setDark }) => {
           {dark ? "Light" : "Dark"}
         </span>
       </button>
-
       <button onClick={onLogout}
         style={{ background:"none", border:"none", cursor:"pointer",
-                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 16px" }}>
+                 display:"flex", flexDirection:"column", alignItems:"center", gap:"3px", padding:"6px 12px" }}>
         <LogOut size={22} strokeWidth={1.8} style={{ color:"#E8100A" }} />
         <span style={{ fontSize:"10px", fontFamily:"'DM Sans',sans-serif", color:"#E8100A" }}>Logout</span>
       </button>
@@ -80,13 +73,13 @@ const BottomNav = ({ onLogout, dark, setDark }) => {
   );
 };
 
-// ── Sidebar ──────────────────────────────────────────────────────
 const Sidebar = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   return (
     <div className="hidden md:flex flex-col justify-between flex-shrink-0"
-      style={{ width:"220px", borderRight:"1px solid #1a1a1a", padding:"28px 12px" }}>
+      style={{ width:"220px", borderRight:"1px solid var(--border)", padding:"28px 12px",
+               background:"var(--bg-card)" }}>
       <div style={{ display:"flex", flexDirection:"column", gap:"4px" }}>
         <p style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"22px",
                     letterSpacing:"4px", color:"#4ADE1A", padding:"0 12px", marginBottom:"20px" }}>
@@ -101,31 +94,29 @@ const Sidebar = ({ onLogout, dark, setDark }) => {
                        cursor:"pointer", width:"100%",
                        background: active?"rgba(74,222,26,0.12)":"transparent" }}>
               <Icon size={20} strokeWidth={active?2.5:1.8} fill={active?"rgba(74,222,26,0.2)":"none"}
-                style={{ color:active?"#4ADE1A":"#666", flexShrink:0 }} />
+                style={{ color:active?"#4ADE1A":"var(--text-muted)", flexShrink:0 }} />
               <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:"14px",
-                             color:active?"#4ADE1A":"#888", fontWeight:active?600:400 }}>
+                             color:active?"#4ADE1A":"var(--text-muted)", fontWeight:active?600:400 }}>
                 {label}
               </span>
             </button>
           );
         })}
       </div>
-
       <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
-        {/* Theme toggle in sidebar */}
         <button onClick={() => setDark(p => !p)}
           style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 12px",
-                   borderRadius:"10px", border:"1px solid #2a2a2a", background:"transparent",
+                   borderRadius:"10px", border:"1px solid var(--border)", background:"transparent",
                    cursor:"pointer", width:"100%" }}>
           {dark
-            ? <Sun size={18} style={{ color:"#888880", flexShrink:0 }} />
-            : <Moon size={18} style={{ color:"#888880", flexShrink:0 }} />
+            ? <Sun size={18} style={{ color:"var(--text-muted)", flexShrink:0 }} />
+            : <Moon size={18} style={{ color:"var(--text-muted)", flexShrink:0 }} />
           }
-          <span style={{ fontFamily:"'Inter',sans-serif", fontSize:"13px", color:"#888880", fontWeight:500 }}>
+          <span style={{ fontFamily:"'Inter',sans-serif", fontSize:"13px",
+                         color:"var(--text-muted)", fontWeight:500 }}>
             {dark ? "Light mode" : "Dark mode"}
           </span>
         </button>
-
         <button onClick={onLogout}
           style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 12px",
                    borderRadius:"10px", border:"1px solid #2a0a0a", background:"#160505",
@@ -140,17 +131,15 @@ const Sidebar = ({ onLogout, dark, setDark }) => {
   );
 };
 
-// ── Comment Drawer ───────────────────────────────────────────────
 const CommentDrawer = ({ onClose }) => {
   const [text, setText] = useState("");
   return (
-    // ✅ fixed z-index aur bottom nav ke upar
     <div onClick={onClose}
       style={{ position:"fixed", inset:0, zIndex:60, background:"rgba(0,0,0,0.6)",
                backdropFilter:"blur(6px)", display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
       <div onClick={(e) => e.stopPropagation()}
         style={{ background:"#181818", borderRadius:"20px 20px 0 0",
-                 borderTop:"1px solid #2a2a2a", padding:"12px 16px 80px", // ✅ 80px bottom — nav ke upar
+                 borderTop:"1px solid #2a2a2a", padding:"12px 16px 80px",
                  display:"flex", flexDirection:"column", gap:"12px" }}>
         <div style={{ width:"36px", height:"4px", borderRadius:"2px", background:"#333", margin:"0 auto 4px" }} />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
@@ -181,7 +170,6 @@ const CommentDrawer = ({ onClose }) => {
   );
 };
 
-// ── Action Button ────────────────────────────────────────────────
 const ActionBtn = ({ onClick, children, label }) => (
   <button onClick={onClick}
     style={{ background:"none", border:"none", cursor:"pointer",
@@ -194,7 +182,6 @@ const ActionBtn = ({ onClick, children, label }) => (
   </button>
 );
 
-// ── Reel Card ────────────────────────────────────────────────────
 const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setSavedIds }) => {
   const videoRef = useRef(null);
   const navigate = useNavigate();
@@ -226,44 +213,26 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
 
   const handleLike = async () => {
     const wasLiked = liked;
-    setLikedIds(prev => {
-      const next = new Set(prev);
-      wasLiked ? next.delete(item._id) : next.add(item._id);
-      return next;
-    });
+    setLikedIds(prev => { const next = new Set(prev); wasLiked ? next.delete(item._id) : next.add(item._id); return next; });
     setLikeCount(c => wasLiked ? c - 1 : c + 1);
     if (!wasLiked) { setLikeAnim(true); setTimeout(() => setLikeAnim(false), 350); }
     try {
-      await axios.post(`${API_URL}/api/food-items/like`,
-        { foodItemId: item._id }, { withCredentials: true });
+      await axios.post(`${API_URL}/api/food-items/like`, { foodItemId: item._id }, { withCredentials: true });
     } catch (err) {
       if (err.response?.status === 401) { navigate("/user/login"); return; }
-      setLikedIds(prev => {
-        const next = new Set(prev);
-        wasLiked ? next.add(item._id) : next.delete(item._id);
-        return next;
-      });
+      setLikedIds(prev => { const next = new Set(prev); wasLiked ? next.add(item._id) : next.delete(item._id); return next; });
       setLikeCount(c => wasLiked ? c + 1 : c - 1);
     }
   };
 
   const handleSave = async () => {
     const wasSaved = saved;
-    setSavedIds(prev => {
-      const next = new Set(prev);
-      wasSaved ? next.delete(item._id) : next.add(item._id);
-      return next;
-    });
+    setSavedIds(prev => { const next = new Set(prev); wasSaved ? next.delete(item._id) : next.add(item._id); return next; });
     try {
-      await axios.post(`${API_URL}/api/food-items/save`,
-        { foodItemId: item._id }, { withCredentials: true });
+      await axios.post(`${API_URL}/api/food-items/save`, { foodItemId: item._id }, { withCredentials: true });
     } catch (err) {
       if (err.response?.status === 401) { navigate("/user/login"); return; }
-      setSavedIds(prev => {
-        const next = new Set(prev);
-        wasSaved ? next.add(item._id) : next.delete(item._id);
-        return next;
-      });
+      setSavedIds(prev => { const next = new Set(prev); wasSaved ? next.add(item._id) : next.delete(item._id); return next; });
     }
   };
 
@@ -273,7 +242,6 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
   const displayDesc = !expanded && isLong ? desc.slice(0, 80)+"…" : desc;
 
   return (
-    // ✅ w-full — mobile pe full width, no black sides
     <div className="relative w-full flex-shrink-0 snap-start overflow-hidden"
       style={{ height:"100dvh", background:"#000" }}>
       <video ref={videoRef} src={item.videoUrl} loop muted playsInline
@@ -290,7 +258,6 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
         {muted ? <VolumeX size={17} style={{ color:"white" }} /> : <Volume2 size={17} style={{ color:"white" }} />}
       </button>
 
-      {/* ✅ Action bar — bottom se upar, nav clear karta hai */}
       <div style={{ position:"absolute", right:"14px", bottom:"160px", zIndex:20,
                     display:"flex", flexDirection:"column", alignItems:"center", gap:"24px" }}>
         <ActionBtn onClick={handleLike} label={formatCount(likeCount)}>
@@ -311,7 +278,6 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
         </ActionBtn>
       </div>
 
-      {/* ✅ bottom info — nav clear karta hai 74px */}
       <div style={{ position:"absolute", bottom:0, left:0, right:"70px", zIndex:10,
                     padding:"0 16px 80px", display:"flex", flexDirection:"column", gap:"10px" }}>
         <p style={{ fontFamily:"'Bebas Neue',cursive", fontSize:"26px", letterSpacing:"1.5px",
@@ -338,13 +304,11 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
           Visit Store →
         </button>
       </div>
-
       {showComment && <CommentDrawer onClose={() => setShowComment(false)} />}
     </div>
   );
 };
 
-// ── Home ─────────────────────────────────────────────────────────
 const Home = () => {
   const [items,    setItems]    = useState(null);
   const [error,    setError]    = useState("");
@@ -364,27 +328,13 @@ const Home = () => {
           axios.get(`${API_URL}/api/food-items/liked`, { withCredentials: true })
                .catch(() => ({ data: { likes: [] } })),
         ]);
-
         const foodItems = feedRes.data?.foodItems;
         if (!foodItems) { navigate("/user/login"); return; }
         setItems(Array.isArray(foodItems) ? foodItems : []);
-
         const saves = savedRes.data?.saves || [];
-        setSavedIds(new Set(
-          saves.map(s => {
-            if (typeof s.foodItemId === "object") return s.foodItemId?._id;
-            return s.foodItemId;
-          }).filter(Boolean)
-        ));
-
+        setSavedIds(new Set(saves.map(s => typeof s.foodItemId==="object" ? s.foodItemId?._id : s.foodItemId).filter(Boolean)));
         const likes = likedRes.data?.likes || [];
-        setLikedIds(new Set(
-          likes.map(l => {
-            if (typeof l.foodItemId === "object") return l.foodItemId?._id;
-            return l.foodItemId;
-          }).filter(Boolean)
-        ));
-
+        setLikedIds(new Set(likes.map(l => typeof l.foodItemId==="object" ? l.foodItemId?._id : l.foodItemId).filter(Boolean)));
       } catch (err) {
         if (err.response?.status === 401) { navigate("/user/login"); return; }
         setError("Couldn't load feed. Try again.");
@@ -399,17 +349,19 @@ const Home = () => {
     navigate("/user/login");
   };
 
+  // ✅ CSS variables use kiye — theme switch pe background change hoga
   const shell = (children) => (
-    <div style={{ display:"flex", height:"100dvh", background:"#0D0D0D" }}>
+    <div style={{ display:"flex", height:"100dvh", background:"var(--bg-page)" }}>
       <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
-      {/* ✅ flex-1 — full width on mobile, no black sides */}
-      <div style={{ flex:1, display:"flex", alignItems:"stretch", justifyContent:"center", background:"#0a0a0a",
-                    minWidth:0 }}>
+      <div style={{ flex:1, display:"flex", alignItems:"stretch", justifyContent:"center",
+                    background:"var(--bg-page)", minWidth:0 }}>
         <div style={{ width:"100%", maxWidth:"420px", height:"100dvh" }}>
           {children}
         </div>
       </div>
-      <div className="hidden md:block" style={{ width:"220px", flexShrink:0, borderLeft:"1px solid #1a1a1a" }} />
+      <div className="hidden md:block"
+           style={{ width:"220px", flexShrink:0, borderLeft:"1px solid var(--border)",
+                    background:"var(--bg-page)" }} />
       <BottomNav onLogout={handleLogout} dark={dark} setDark={setDark} />
     </div>
   );
@@ -418,7 +370,7 @@ const Home = () => {
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100%", gap:"12px" }}>
       <div style={{ width:"32px", height:"32px", borderRadius:"50%", border:"2px solid #4ADE1A",
                     borderTopColor:"transparent", animation:"spin 0.8s linear infinite" }} />
-      <p style={{ fontSize:"14px", fontFamily:"'DM Sans',sans-serif", color:"#888" }}>Loading feed…</p>
+      <p style={{ fontSize:"14px", fontFamily:"'DM Sans',sans-serif", color:"var(--text-muted)" }}>Loading feed…</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
@@ -431,8 +383,8 @@ const Home = () => {
 
   if (items.length === 0) return shell(
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100%", gap:"8px" }}>
-      <p style={{ fontFamily:"'Bebas Neue',cursive", fontSize:"28px", color:"#F5F5F0" }}>No food yet 👀</p>
-      <p style={{ fontSize:"13px", color:"#555", fontFamily:"'DM Sans',sans-serif" }}>Check back soon.</p>
+      <p style={{ fontFamily:"'Bebas Neue',cursive", fontSize:"28px", color:"var(--text-main)" }}>No food yet 👀</p>
+      <p style={{ fontSize:"13px", color:"var(--text-muted)", fontFamily:"'DM Sans',sans-serif" }}>Check back soon.</p>
     </div>
   );
 
