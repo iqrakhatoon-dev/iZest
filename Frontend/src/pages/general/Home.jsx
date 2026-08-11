@@ -242,8 +242,9 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
   const displayDesc = !expanded && isLong ? desc.slice(0, 80)+"…" : desc;
 
   return (
+    // ✅ FIX 1: height 100% instead of 100dvh so it fills the snap container correctly
     <div className="relative w-full flex-shrink-0 snap-start overflow-hidden"
-      style={{ height:"100dvh", background:"#000" }}>
+      style={{ height:"100%", background:"#000" }}>
       <video ref={videoRef} src={item.videoUrl} loop muted playsInline
         style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }} />
       <div style={{ position:"absolute", inset:0, pointerEvents:"none",
@@ -349,12 +350,12 @@ const Home = () => {
     navigate("/user/login");
   };
 
-  // ✅ CSS variables use kiye — theme switch pe background change hoga
   const shell = (children) => (
-    <div style={{ display:"flex", height:"100dvh", background:"var(--bg-page)" }}>
+    <div style={{ display:"flex", height:"100dvh", overflow:"hidden", background:"var(--bg-page)" }}>
       <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
-      <div style={{ flex:1, display:"flex", alignItems:"stretch", justifyContent:"center",
-                    background:"var(--bg-page)", minWidth:0 }}>
+      {/* ✅ FIX 2: center column ko flex:1 rakha, maxWidth hata diya — black gap fix */}
+      <div style={{ flex:1, display:"flex", justifyContent:"center",
+                    background:"#000", minWidth:0, height:"100dvh", overflow:"hidden" }}>
         <div style={{ width:"100%", maxWidth:"420px", height:"100dvh" }}>
           {children}
         </div>
@@ -389,11 +390,17 @@ const Home = () => {
   );
 
   return shell(
-    <div style={{ height:"100dvh", overflowY:"scroll", scrollSnapType:"y mandatory", width:"100%" }}>
+    // ✅ FIX 3: snap container height 100dvh + overflow hidden on parent to avoid double scrollbar
+    <div style={{ height:"100dvh", overflowY:"scroll", scrollSnapType:"y mandatory",
+                  width:"100%", scrollbarWidth:"none", msOverflowStyle:"none" }}>
+      <style>{`::-webkit-scrollbar { display: none; }`}</style>
       {items.map((item) => (
-        <ReelCard key={item._id} item={item} muted={muted} setMuted={setMuted}
-          likedIds={likedIds} setLikedIds={setLikedIds}
-          savedIds={savedIds} setSavedIds={setSavedIds} />
+        // ✅ FIX 4: each reel snap item height 100dvh explicitly
+        <div key={item._id} style={{ height:"100dvh", scrollSnapAlign:"start", flexShrink:0 }}>
+          <ReelCard item={item} muted={muted} setMuted={setMuted}
+            likedIds={likedIds} setLikedIds={setLikedIds}
+            savedIds={savedIds} setSavedIds={setSavedIds} />
+        </div>
       ))}
     </div>
   );

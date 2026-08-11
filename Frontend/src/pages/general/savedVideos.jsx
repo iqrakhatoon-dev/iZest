@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { Home as HomeIcon, Bookmark, LogOut, Play } from "lucide-react";
+import { Home as HomeIcon, Bookmark, LogOut, Play, Sun, Moon } from "lucide-react";
 import API_URL from "../../api.js";
 
 const NAV_ITEMS = [
@@ -10,8 +10,26 @@ const NAV_ITEMS = [
   { label: "Saved", Icon: Bookmark, path: "/saved" },
 ];
 
-// Bottom Nav 
-const BottomNav = ({ onLogout }) => {
+// ✅ FIX 1: useTheme hook add kiya — Home.jsx jaisa same logic
+const useTheme = () => {
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("izest-theme");
+    return saved ? saved === "dark" : true;
+  });
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("izest-theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("izest-theme", "light");
+    }
+  }, [dark]);
+  return [dark, setDark];
+};
+
+// ✅ FIX 2: dark + setDark props accept kiye BottomNav mein
+const BottomNav = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -20,7 +38,7 @@ const BottomNav = ({ onLogout }) => {
       className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden items-center justify-around"
       style={{
         height: "62px",
-        background: "rgba(0,0,0,0.65)",
+        background: "rgba(0,0,0,0.75)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -34,7 +52,7 @@ const BottomNav = ({ onLogout }) => {
             onClick={() => navigate(path)}
             style={{
               background: "none", border: "none", cursor: "pointer",
-              display: "flex", flexDirection: "column", alignItems: "center", gap: "3px", padding: "6px 24px",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: "3px", padding: "6px 12px",
             }}
           >
             <Icon
@@ -54,11 +72,28 @@ const BottomNav = ({ onLogout }) => {
         );
       })}
 
+      {/* ✅ FIX 3: Theme toggle button add kiya BottomNav mein */}
+      <button
+        onClick={() => setDark(p => !p)}
+        style={{
+          background: "none", border: "none", cursor: "pointer",
+          display: "flex", flexDirection: "column", alignItems: "center", gap: "3px", padding: "6px 12px",
+        }}
+      >
+        {dark
+          ? <Sun size={22} strokeWidth={1.8} style={{ color: "rgba(255,255,255,0.45)" }} />
+          : <Moon size={22} strokeWidth={1.8} style={{ color: "rgba(255,255,255,0.45)" }} />
+        }
+        <span style={{ fontSize: "10px", fontFamily: "'DM Sans', sans-serif", color: "rgba(255,255,255,0.45)" }}>
+          {dark ? "Light" : "Dark"}
+        </span>
+      </button>
+
       <button
         onClick={onLogout}
         style={{
           background: "none", border: "none", cursor: "pointer",
-          display: "flex", flexDirection: "column", alignItems: "center", gap: "3px", padding: "6px 24px",
+          display: "flex", flexDirection: "column", alignItems: "center", gap: "3px", padding: "6px 12px",
         }}
       >
         <LogOut size={22} strokeWidth={1.8} style={{ color: "#E8100A" }} />
@@ -70,15 +105,16 @@ const BottomNav = ({ onLogout }) => {
   );
 };
 
-//Sidebar 
-const Sidebar = ({ onLogout }) => {
+// ✅ FIX 4: Sidebar mein bhi dark + setDark + theme toggle add kiya
+const Sidebar = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   return (
     <div
       className="hidden md:flex flex-col justify-between flex-shrink-0"
-      style={{ width: "220px", borderRight: "1px solid #1a1a1a", padding: "28px 12px" }}
+      style={{ width: "220px", borderRight: "1px solid var(--border)", padding: "28px 12px",
+               background: "var(--bg-card)" }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         <p style={{
@@ -105,11 +141,11 @@ const Sidebar = ({ onLogout }) => {
                 size={20}
                 strokeWidth={active ? 2.5 : 1.8}
                 fill={active ? "rgba(74,222,26,0.2)" : "none"}
-                style={{ color: active ? "#4ADE1A" : "#666", flexShrink: 0 }}
+                style={{ color: active ? "#4ADE1A" : "var(--text-muted)", flexShrink: 0 }}
               />
               <span style={{
                 fontFamily: "'DM Sans', sans-serif", fontSize: "14px",
-                color: active ? "#4ADE1A" : "#888", fontWeight: active ? 600 : 400,
+                color: active ? "#4ADE1A" : "var(--text-muted)", fontWeight: active ? 600 : 400,
               }}>
                 {label}
               </span>
@@ -118,30 +154,46 @@ const Sidebar = ({ onLogout }) => {
         })}
       </div>
 
-      <button
-        onClick={onLogout}
-        style={{
-          display: "flex", alignItems: "center", gap: "12px",
-          padding: "10px 12px", borderRadius: "10px",
-          border: "1px solid #2a0a0a", background: "#160505",
-          cursor: "pointer", width: "100%",
-        }}
-      >
-        <LogOut size={18} style={{ color: "#E8100A", flexShrink: 0 }} />
-        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#E8100A", fontWeight: 500 }}>
-          Logout
-        </span>
-      </button>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <button
+          onClick={() => setDark(p => !p)}
+          style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px",
+                   borderRadius: "10px", border: "1px solid var(--border)", background: "transparent",
+                   cursor: "pointer", width: "100%" }}
+        >
+          {dark
+            ? <Sun size={18} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+            : <Moon size={18} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
+          }
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px",
+                         color: "var(--text-muted)", fontWeight: 500 }}>
+            {dark ? "Light mode" : "Dark mode"}
+          </span>
+        </button>
+
+        <button
+          onClick={onLogout}
+          style={{
+            display: "flex", alignItems: "center", gap: "12px",
+            padding: "10px 12px", borderRadius: "10px",
+            border: "1px solid #2a0a0a", background: "#160505",
+            cursor: "pointer", width: "100%",
+          }}
+        >
+          <LogOut size={18} style={{ color: "#E8100A", flexShrink: 0 }} />
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#E8100A", fontWeight: 500 }}>
+            Logout
+          </span>
+        </button>
+      </div>
     </div>
   );
 };
 
-// Video Card 
 const SavedCard = ({ item, onUnsave }) => {
   const navigate  = useNavigate();
   const videoRef  = useRef(null);
   const [hovering, setHovering] = useState(false);
-
 
   useEffect(() => {
     const el = videoRef.current;
@@ -167,14 +219,12 @@ const SavedCard = ({ item, onUnsave }) => {
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
 
-        {/* Gradient */}
         <div style={{
           position: "absolute", inset: 0,
           background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%)",
           pointerEvents: "none",
         }} />
 
-        {/* Play hint when not hovering */}
         {!hovering && (
           <div style={{
             position: "absolute", inset: 0,
@@ -191,7 +241,6 @@ const SavedCard = ({ item, onUnsave }) => {
           </div>
         )}
 
-        {/* Unsave button */}
         <button
           onClick={(e) => { e.stopPropagation(); onUnsave(item._id, item.foodItemId?._id); }}
           style={{
@@ -206,7 +255,6 @@ const SavedCard = ({ item, onUnsave }) => {
           <Bookmark size={14} fill="#4ADE1A" style={{ color: "#4ADE1A" }} />
         </button>
 
-        {/* Dish name at bottom */}
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "10px" }}>
           <p style={{
             fontFamily: "'Bebas Neue', cursive", fontSize: "15px",
@@ -220,10 +268,10 @@ const SavedCard = ({ item, onUnsave }) => {
   );
 };
 
-// SavedVideos
 const SavedVideos = () => {
   const [saves,   setSaves]   = useState(null);
   const [error,   setError]   = useState("");
+  const [dark,    setDark]    = useTheme(); // ✅ FIX 5: useTheme hook use kiya
   const navigate  = useNavigate();
 
   useEffect(() => {
@@ -241,7 +289,6 @@ const SavedVideos = () => {
   }, []);
 
   const handleUnsave = async (saveId, foodItemId) => {
-    // optimistic remove
     setSaves((prev) => prev.filter((s) => s._id !== saveId));
     try {
       await axios.post(
@@ -251,7 +298,6 @@ const SavedVideos = () => {
       );
     } catch (err) {
       if (err.response?.status === 401) navigate("/user/login");
-      // refetch on failure
       const res = await axios.get(`${API_URL}/api/food-items/saved` , { withCredentials: true });
       setSaves(res.data?.saves || []);
     }
@@ -262,27 +308,28 @@ const SavedVideos = () => {
     navigate("/user/login");
   };
 
+  // ✅ FIX 6: var(--bg-page) use kiya hardcoded #0D0D0D ki jagah — theme switch hogi
   const shell = (children) => (
-    <div style={{ display: "flex", minHeight: "100dvh", background: "#0D0D0D" }}>
-      <Sidebar onLogout={handleLogout} />
+    <div style={{ display: "flex", minHeight: "100dvh", background: "var(--bg-page)" }}>
+      <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
       <div style={{ flex: 1, padding: "28px 20px 80px", overflowY: "auto" }}>
         {children}
       </div>
-      <div className="hidden md:block" style={{ width: "220px", flexShrink: 0, borderLeft: "1px solid #1a1a1a" }} />
-      <BottomNav onLogout={handleLogout} />
+      <div className="hidden md:block"
+           style={{ width: "220px", flexShrink: 0, borderLeft: "1px solid var(--border)",
+                    background: "var(--bg-page)" }} />
+      <BottomNav onLogout={handleLogout} dark={dark} setDark={setDark} />
     </div>
   );
 
-  // Loading
   if (saves === null) return shell(
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "70vh", gap: "12px" }}>
       <div style={{ width: "32px", height: "32px", borderRadius: "50%", border: "2px solid #4ADE1A", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
-      <p style={{ fontSize: "14px", fontFamily: "'DM Sans', sans-serif", color: "#888" }}>Loading saved…</p>
+      <p style={{ fontSize: "14px", fontFamily: "'DM Sans', sans-serif", color: "var(--text-muted)" }}>Loading saved…</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
 
-  // Error
   if (error) return shell(
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "70vh" }}>
       <p style={{ fontSize: "14px", color: "#E8100A", fontFamily: "'DM Sans', sans-serif" }}>{error}</p>
@@ -291,24 +338,25 @@ const SavedVideos = () => {
 
   return shell(
     <>
-      {/* Header */}
       <div style={{ marginBottom: "24px" }}>
-        <p style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "32px", letterSpacing: "2px", color: "#F5F5F0", lineHeight: 1 }}>
+        <p style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "32px", letterSpacing: "2px",
+                    color: "var(--text-main)", lineHeight: 1 }}>
           Saved
         </p>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#555", marginTop: "4px" }}>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
+                    color: "var(--text-muted)", marginTop: "4px" }}>
           {saves.length} {saves.length === 1 ? "video" : "videos"} saved
         </p>
       </div>
 
-      {/* Empty state */}
       {saves.length === 0 && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "50vh", gap: "12px" }}>
-          <Bookmark size={48} strokeWidth={1.2} style={{ color: "#2a2a2a" }} />
-          <p style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "22px", color: "#333", letterSpacing: "1px" }}>
+          <Bookmark size={48} strokeWidth={1.2} style={{ color: "var(--text-muted)" }} />
+          <p style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "22px",
+                      color: "var(--text-main)", letterSpacing: "1px" }}>
             Nothing saved yet
           </p>
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#444" }}>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "var(--text-muted)" }}>
             Tap the bookmark on any reel to save it here
           </p>
           <button
@@ -324,7 +372,6 @@ const SavedVideos = () => {
         </div>
       )}
 
-      {/* Grid */}
       {saves.length > 0 && (
         <div style={{
           display: "grid",
