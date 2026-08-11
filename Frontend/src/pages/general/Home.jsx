@@ -79,7 +79,7 @@ const Sidebar = ({ onLogout, dark, setDark }) => {
   return (
     <div className="hidden md:flex flex-col justify-between flex-shrink-0"
       style={{ width:"220px", borderRight:"1px solid var(--border)", padding:"28px 12px",
-               background:"var(--bg-card)" }}>
+               background:"#000" }}>
       <div style={{ display:"flex", flexDirection:"column", gap:"4px" }}>
         <p style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"22px",
                     letterSpacing:"4px", color:"#4ADE1A", padding:"0 12px", marginBottom:"20px" }}>
@@ -351,7 +351,7 @@ const Home = () => {
   };
 
   const shell = (children) => (
-    <div style={{ display:"flex", height:"100dvh", overflow:"hidden", background:"var(--bg-page)" }}>
+    <div style={{ display:"flex", height:"100dvh", overflow:"hidden", background:"#000" }}>
       <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
       {/* ✅ FIX 2: center column ko flex:1 rakha, maxWidth hata diya — black gap fix */}
       <div style={{ flex:1, display:"flex", justifyContent:"center",
@@ -362,7 +362,7 @@ const Home = () => {
       </div>
       <div className="hidden md:block"
            style={{ width:"220px", flexShrink:0, borderLeft:"1px solid var(--border)",
-                    background:"var(--bg-page)" }} />
+                    background:"#000" }} />
       <BottomNav onLogout={handleLogout} dark={dark} setDark={setDark} />
     </div>
   );
