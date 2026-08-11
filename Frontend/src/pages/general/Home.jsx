@@ -244,7 +244,7 @@ const ReelCard = ({ item, muted, setMuted, likedIds, setLikedIds, savedIds, setS
   return (
     // ✅ FIX 1: height 100% instead of 100dvh so it fills the snap container correctly
     <div className="relative w-full flex-shrink-0 snap-start overflow-hidden"
-      style={{ height:"100%", background:"#000" }}>
+      style={{ height:"100%", background:"var(--bg-page)" }}>
       <video ref={videoRef} src={item.videoUrl} loop muted playsInline
         style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }} />
       <div style={{ position:"absolute", inset:0, pointerEvents:"none",
