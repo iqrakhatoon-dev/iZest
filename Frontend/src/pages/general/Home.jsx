@@ -362,7 +362,7 @@ const Home = () => {
       </div>
       <div className="hidden md:block"
            style={{ width:"220px", flexShrink:0, borderLeft:"1px solid var(--border)",
-                    background:"#000" }} />
+                    background:"var(--bg-page)" }} />
       <BottomNav onLogout={handleLogout} dark={dark} setDark={setDark} />
     </div>
   );
