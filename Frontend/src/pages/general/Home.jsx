@@ -79,7 +79,7 @@ const Sidebar = ({ onLogout, dark, setDark }) => {
   return (
     <div className="hidden md:flex flex-col justify-between flex-shrink-0"
       style={{ width:"220px", borderRight:"1px solid var(--border)", padding:"28px 12px",
-               background:"#000" }}>
+               background:"var(--bg-card)" }}>
       <div style={{ display:"flex", flexDirection:"column", gap:"4px" }}>
         <p style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"22px",
                     letterSpacing:"4px", color:"#4ADE1A", padding:"0 12px", marginBottom:"20px" }}>
@@ -351,11 +351,11 @@ const Home = () => {
   };
 
   const shell = (children) => (
-    <div style={{ display:"flex", height:"100dvh", overflow:"hidden", background:"#000" }}>
+    <div style={{ display:"flex", height:"100dvh", overflow:"hidden", background:"var(--bg-page)" }}>
       <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
       {/* ✅ FIX 2: center column ko flex:1 rakha, maxWidth hata diya — black gap fix */}
       <div style={{ flex:1, display:"flex", justifyContent:"center",
-                    background:"#000", minWidth:0, height:"100dvh", overflow:"hidden" }}>
+                    background:"var(--bg-page)", minWidth:0, height:"100dvh", overflow:"hidden" }}>
         <div style={{ width:"100%", maxWidth:"420px", height:"100dvh" }}>
           {children}
         </div>
