@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { Sun, Moon } from "lucide-react";
 import API_URL from "../../api.js";
 
-// ✅ useTheme hook
+// useTheme hook
 const useTheme = () => {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("izest-theme");
@@ -109,7 +109,6 @@ const FoodPartnerProfile = () => {
         ← Back
       </button>
 
-      {/* ✅ Theme toggle button — top right */}
       <button
         onClick={() => setDark(p => !p)}
         className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-['Inter'] font-medium"

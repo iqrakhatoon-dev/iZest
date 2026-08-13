@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { Sun, Moon } from "lucide-react";
 import API_URL from "../../api.js";
 
-// ✅ useTheme hook — localStorage se theme read karta hai
 const useTheme = () => {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("izest-theme");
@@ -27,7 +26,7 @@ const useTheme = () => {
 const CreateFood = () => {
   const navigate = useNavigate();
   const formRef  = useRef(null);
-  const [dark, setDark] = useTheme(); // ✅ theme hook
+  const [dark, setDark] = useTheme(); 
 
   const [name,        setName]        = useState("");
   const [description, setDescription] = useState("");
@@ -97,7 +96,7 @@ const CreateFood = () => {
     <div ref={formRef} className="min-h-screen flex items-center justify-center p-4"
          style={{ background: "var(--bg-page)" }}>
 
-      {/* ✅ Back button */}
+      {/* Back button */}
       <button onClick={() => navigate("/")}
         className="fixed top-5 left-5 z-50 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-['Inter'] font-medium"
         style={{ background: "var(--bg-card)", backdropFilter: "blur(10px)",
@@ -105,7 +104,6 @@ const CreateFood = () => {
         ← Feed
       </button>
 
-      {/* ✅ Theme toggle button — top right */}
       <button
         onClick={() => setDark(p => !p)}
         className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-['Inter'] font-medium"

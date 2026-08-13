@@ -10,7 +10,6 @@ const NAV_ITEMS = [
   { label: "Saved", Icon: Bookmark, path: "/saved" },
 ];
 
-// ✅ FIX 1: useTheme hook add kiya — Home.jsx jaisa same logic
 const useTheme = () => {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("izest-theme");
@@ -28,7 +27,6 @@ const useTheme = () => {
   return [dark, setDark];
 };
 
-// ✅ FIX 2: dark + setDark props accept kiye BottomNav mein
 const BottomNav = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -72,7 +70,6 @@ const BottomNav = ({ onLogout, dark, setDark }) => {
         );
       })}
 
-      {/* ✅ FIX 3: Theme toggle button add kiya BottomNav mein */}
       <button
         onClick={() => setDark(p => !p)}
         style={{
@@ -105,7 +102,6 @@ const BottomNav = ({ onLogout, dark, setDark }) => {
   );
 };
 
-// ✅ FIX 4: Sidebar mein bhi dark + setDark + theme toggle add kiya
 const Sidebar = ({ onLogout, dark, setDark }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -271,7 +267,7 @@ const SavedCard = ({ item, onUnsave }) => {
 const SavedVideos = () => {
   const [saves,   setSaves]   = useState(null);
   const [error,   setError]   = useState("");
-  const [dark,    setDark]    = useTheme(); // ✅ FIX 5: useTheme hook use kiya
+  const [dark,    setDark]    = useTheme();
   const navigate  = useNavigate();
 
   useEffect(() => {
@@ -308,7 +304,6 @@ const SavedVideos = () => {
     navigate("/user/login");
   };
 
-  // ✅ FIX 6: var(--bg-page) use kiya hardcoded #0D0D0D ki jagah — theme switch hogi
   const shell = (children) => (
     <div style={{ display: "flex", minHeight: "100dvh", background: "var(--bg-page)" }}>
       <Sidebar onLogout={handleLogout} dark={dark} setDark={setDark} />
