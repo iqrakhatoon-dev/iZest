@@ -23,7 +23,6 @@ const UserLogin = () => {
         { email, password },
         { withCredentials: true }
       );
-      console.log("Login success", res.data);
       navigate("/"); 
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Try again.");

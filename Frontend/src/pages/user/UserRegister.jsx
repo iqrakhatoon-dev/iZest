@@ -24,7 +24,6 @@ const UserRegister = () => {
         { username, email, password },
         { withCredentials: true }
       );
-      console.log("Register success", res.data);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Try again.");

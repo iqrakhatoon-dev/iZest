@@ -27,7 +27,6 @@ const FoodPartnerRegister = () => {
         { username, contactName, phoneNumber, email, address, password },
         { withCredentials: true }
       );
-      console.log("Register success", res.data);
       navigate("/create-food");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Try again.");

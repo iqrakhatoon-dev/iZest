@@ -28,7 +28,7 @@ const FoodPartnerProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const gridRef  = useRef(null);
-  const [dark, setDark] = useTheme(); // ✅ theme hook
+  const [dark, setDark] = useTheme(); 
 
   const [partner, setPartner] = useState(null);
   const [videos,  setVideos]  = useState([]);
@@ -48,7 +48,6 @@ const FoodPartnerProfile = () => {
         setVideos(Array.isArray(vids) ? vids : []);
       } catch (err) {
         setError("Couldn't load this store.");
-        console.error(err);
       } finally {
         setLoading(false);
       }
